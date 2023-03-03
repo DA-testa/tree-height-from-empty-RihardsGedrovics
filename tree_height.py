@@ -22,7 +22,6 @@
 #main()
 # print(numpy.array([1,2,3]))
 
-
 import os
 import sys
 import threading
@@ -64,7 +63,7 @@ def main():
             else:
                 pass
     except EOFError as e:
-        print(e)
+        pass
             
 main()
          

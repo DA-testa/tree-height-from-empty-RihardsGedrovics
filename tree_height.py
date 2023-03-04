@@ -1,33 +1,68 @@
-# python3
-
+#Rihards Gedrovics 221RDC023
 import sys
 import threading
-import numpy
+import re
+from array import *
+import numpy as np
 
 
 def compute_height(n, parents):
-    # Write this function
-    max_height = 0
-    # Your code here
-    return max_height
+    
+    heights = np.zeros(n, dtype=int)
+    tree_height = 0
+
+    def calculate_height(n):
+        if heights[n] != 0:
+            return heights[n]
+
+        if parents[n] == -1:
+            heights[n] = 1
+            return 1
+        parent_height = calculate_height(parents[n])
+        height = parent_height + 1
+        heights[n] = height
+        return height
+    for j in range(n):
+        node_height = calculate_height(j)
+        if node_height > tree_height:
+            tree_height = node_height
+
+    return tree_height
 
 
 def main():
-    # implement input form keyboard and from files
-    
-    # let user input file name to use, don't allow file names with letter a
-    # account for github input inprecision
-    
-    # input number of elements
-    # input values in one variable, separate with space, split these values in an array
-    # call the function and output it's result
-    pass
+    command=input()
+    parents=array('i')
+    if 'I' in command:
+        n=int(input())
+        par=input()
+        a=re.split(' ',par)
+        for x in a: 
+             parents.append(int(x))
 
-# In Python, the default limit on recursion depth is rather low,
-# so raise it here for this problem. Note that to take advantage
-# of bigger stack, we have to launch the computation in a new thread.
-sys.setrecursionlimit(10**7)  # max depth of recursion
-threading.stack_size(2**27)   # new thread will get stack of such size
+
+    
+    if 'F' in command:
+        file=input()
+        name="test/"+file
+        if 'a' in file:
+            print("wrong file name")
+        else:
+            with open(name,"r") as file:
+                n=int(file.readline())
+                lines=file.readlines()
+                nodes=lines[1:]
+                for nodes in lines:
+                    a=re.split(' ',nodes)
+                    for x in a:
+                     parents.append(int(x))
+                   
+    
+    height=compute_height(n,parents)
+    print(height)
+    
+
+sys.setrecursionlimit(10**7) 
+
+threading.stack_size(2**27)   
 threading.Thread(target=main).start()
-main()
-# print(numpy.array([1,2,3]))

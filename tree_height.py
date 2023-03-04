@@ -1,10 +1,57 @@
+# python3
+
+import sys
+import threading
+
+
+
+def compute_height(n, parents):
+    def get_child_nodes(nodes_to_find, initial_input, level):
+        level += 1
+        child_nodes = []
+        for node in nodes_to_find:
+            for index, pointer in enumerate(initial_input):
+                if pointer == node:
+                    child_nodes.append(index)
+        if child_nodes:
+            level = get_child_nodes(child_nodes, initial_input, level)
+        return level
+
+    height = get_child_nodes([parents.index(-1)], parents, 0)
+    return height
+
+def main():
+    input_type = input("Input Type: ")
+    if "F" in input_type:
+        filename = input("Input File Name: ")
+        if "a" in filename:
+            print("Files with letter 'a' are not allwed")
+            return
+        if "test/" not in filename:
+            filename = "test/" + filename
+        if "test/" in filename:    
+            with open(filename) as f:
+                n = int(f.readline().strip())
+                parents = list(map(int, f.readline().strip().split()))
+                height = compute_height(n, parents)
+    elif "I" in input_type:
+        n = int(input("Input Number of Nodes: "))
+        parents = list(map(int, input("Input Nodes: ").split()))
+        height = compute_height(n, parents)
+
+    print(height)
+    return height
+
+
 #def compute_height(n, parents):
     # Write this function
-#    max_height = 0
+    #max_height = 0
     # Your code here
-#    return max_height
+    #return max_height
+
 
 #def main():
+   
     # implement input form keyboard and from files
     
     # let user input file name to use, don't allow file names with letter a
@@ -13,60 +60,11 @@
     # input number of elements
     # input values in one variable, separate with space, split these values in an array
     # call the function and output it's result
-#    pass
+
 
 # In Python, the default limit on recursion depth is rather low,
 # so raise it here for this problem. Note that to take advantage
 # of bigger stack, we have to launch the computation in a new thread.
-
-#main()
-# print(numpy.array([1,2,3]))
-
-import os
-import sys
-import threading
-
-def height(tree):
-    depth_list = [1]*len(tree)
-    for i, n in enumerate(tree):
-        while n != -1:
-            depth_list[i] += 1
-            n = tree[n]
-               
-    return max(depth_list)
-
-def main():
-    try:
-        inp=str(input())
-
-        if "I" in inp:
-            nodes=int(input())
-            parents = list(map(int, input().split(" ")))
-                        
-            return print(height(parents))
-    
-        if "F" in inp:
-            file_name = input()
-        
-            if "a" not in file_name:
-                script_dir=os.path.dirname(os.path.abspath("__file__"))
-                rel_path="test/"+file_name
-                with open(rel_path, "r") as f:
-                    lines=f.readlines()
-                
-                    # if 1<=int(lines[0])<=105:
-                    nodes=lines[0]
-                    parents= lines[1]
-                    lst=[int(x) for x in parents.strip().split(" ")]
-                    return print(height(lst))
-                                
-            else:
-                pass
-    except EOFError as e:
-        pass
-            
-main()
-         
-sys.setrecursionlimit(10**8)  # max depth of recursion
-threading.stack_size(2**28)   # new thread will get stack of such size
+sys.setrecursionlimit(10**7)  # max depth of recursion
+threading.stack_size(2**27)   # new thread will get stack of such size
 threading.Thread(target=main).start()

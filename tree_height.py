@@ -1,70 +1,68 @@
-# python3
-
+#Rihards Gedrovics 221RDC023
 import sys
 import threading
-
+import re
+from array import *
+import numpy as np
 
 
 def compute_height(n, parents):
-    def get_child_nodes(nodes_to_find, initial_input, level):
-        level += 1
-        child_nodes = []
-        for node in nodes_to_find:
-            for index, pointer in enumerate(initial_input):
-                if pointer == node:
-                    child_nodes.append(index)
-        if child_nodes:
-            level = get_child_nodes(child_nodes, initial_input, level)
-        return level
+    
+    heights = np.zeros(n, dtype=int)
+    tree_height = 0
 
-    height = get_child_nodes([parents.index(-1)], parents, 0)
-    return height
+    def calculate_height(n):
+        if heights[n] != 0:
+            return heights[n]
+
+        if parents[n] == -1:
+            heights[n] = 1
+            return 1
+        parent_height = calculate_height(parents[n])
+        height = parent_height + 1
+        heights[n] = height
+        return height
+    for j in range(n):
+        node_height = calculate_height(j)
+        if node_height > tree_height:
+            tree_height = node_height
+
+    return tree_height
+
 
 def main():
-    input_type = input("Input Type: ")
-    if "F" in input_type:
-        filename = input("Input File Name: ")
-        if "a" in filename:
-            print("Files with letter 'a' are not allwed")
-            return
-        if "test/" not in filename:
-            filename = "test/" + filename
-        if "test/" in filename:    
-            with open(filename) as f:
-                n = int(f.readline().strip())
-                parents = list(map(int, f.readline().strip().split()))
-                height = compute_height(n, parents)
-    elif "I" in input_type:
-        n = int(input("Input Number of Nodes: "))
-        parents = list(map(int, input("Input Nodes: ").split()))
-        height = compute_height(n, parents)
+    command=input()
+    parents=array('i')
+    if 'I' in command:
+        n=int(input())
+        par=input()
+        a=re.split(' ',par)
+        for x in a: 
+             parents.append(int(x))
 
+
+    
+    if 'F' in command:
+        file=input()
+        name="test/"+file
+        if 'a' in file:
+            print("wrong file name")
+        else:
+            with open(name,"r") as file:
+                n=int(file.readline())
+                lines=file.readlines()
+                nodes=lines[1:]
+                for nodes in lines:
+                    a=re.split(' ',nodes)
+                    for x in a:
+                     parents.append(int(x))
+                   
+    
+    height=compute_height(n,parents)
     print(height)
-    return height
-
-
-#def compute_height(n, parents):
-    # Write this function
-    #max_height = 0
-    # Your code here
-    #return max_height
-
-
-#def main():
-   
-    # implement input form keyboard and from files
     
-    # let user input file name to use, don't allow file names with letter a
-    # account for github input inprecision
-    
-    # input number of elements
-    # input values in one variable, separate with space, split these values in an array
-    # call the function and output it's result
 
+sys.setrecursionlimit(10**7) 
 
-# In Python, the default limit on recursion depth is rather low,
-# so raise it here for this problem. Note that to take advantage
-# of bigger stack, we have to launch the computation in a new thread.
-sys.setrecursionlimit(10**7)  # max depth of recursion
-threading.stack_size(2**27)   # new thread will get stack of such size
+threading.stack_size(2**27)   
 threading.Thread(target=main).start()
